@@ -134,4 +134,10 @@ public class AdminController {
                 .result("Printer disabled successfully")
                 .build();
     }
+    @DeleteMapping("/document-expired")
+    ApiResponse<String> checkExpiredDocument() {
+        return ApiResponse.<String>builder()
+                .result(adminService.checkExpiredDocument())
+                .build();
+    }
 }

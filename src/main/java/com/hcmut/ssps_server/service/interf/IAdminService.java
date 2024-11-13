@@ -15,4 +15,5 @@ public interface IAdminService {
     StudentResponse getStudent(Long studentId);
     List<StudentResponse> getAllStudents(Pageable pageable);
     UserResponse getMyInfo();
+    String checkExpiredDocument();
 }

@@ -91,7 +91,7 @@ public class StudentController {
                 .build();
     }
 
-    @PostMapping("confirm-receive")
+    @PostMapping("/confirm-receive")
     public ApiResponse<String> confirmReceive(@RequestParam int printingId) {
 
         return ApiResponse.<String>builder()
