@@ -7,9 +7,11 @@ import com.hcmut.ssps_server.exception.AppException;
 import com.hcmut.ssps_server.exception.ErrorCode;
 import com.hcmut.ssps_server.mapper.StudentMapper;
 import com.hcmut.ssps_server.mapper.UserMapper;
+import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.model.user.Student;
 import com.hcmut.ssps_server.model.user.User;
 
+import com.hcmut.ssps_server.repository.PrintingRepository;
 import com.hcmut.ssps_server.repository.UserRepository.StudentRepository;
 import com.hcmut.ssps_server.repository.UserRepository.UserRepository;
 import com.hcmut.ssps_server.service.interf.IAdminService;
@@ -23,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,6 +36,8 @@ public class AdminService implements IAdminService {
     UserMapper userMapper;
     StudentRepository studentRepository;
     StudentMapper studentMapper;
+    PrintingRepository printingRepository;
+
     @Override
     public User createAdmin(UserCreationRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -67,5 +72,16 @@ public class AdminService implements IAdminService {
 
         User admin = userRepository.findByEmail(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return userMapper.toUserResponse(admin);
+    }
+
+    @Override
+    public String checkExpiredDocument() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Printing> expired = printingRepository.findByExpiredTimeBefore(now);
+        if (expired.isEmpty()) {
+            return ("No expired print request found");
+        }
+        printingRepository.deleteAll(expired);
+        return ("Expired print request deleted");
     }
 }
