@@ -7,9 +7,11 @@ import com.hcmut.ssps_server.dto.response.ApiResponse;
 import com.hcmut.ssps_server.dto.response.StudentResponse;
 import com.hcmut.ssps_server.dto.response.UserResponse;
 import com.hcmut.ssps_server.model.Printer;
+import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.model.user.User;
 import com.hcmut.ssps_server.service.interf.IAdminService;
 import com.hcmut.ssps_server.service.interf.IPrinterService;
+import com.hcmut.ssps_server.service.interf.IPrintingService;
 import com.hcmut.ssps_server.service.interf.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class AdminController {
     IAdminService adminService;
     IUserService userService;
     IPrinterService printerService;
+    IPrintingService printingService;
 
     @PostMapping("/register")
     ApiResponse<User> createAdmin(@RequestBody @Valid UserCreationRequest request) {
@@ -138,6 +141,14 @@ public class AdminController {
     ApiResponse<String> checkExpiredDocument() {
         return ApiResponse.<String>builder()
                 .result(adminService.checkExpiredDocument())
+                .build();
+    }
+
+    @GetMapping("/get-print-requests/{printerId}")
+    ApiResponse<List<Printing>> getPrintRequestsByPrinterId(@PathVariable int printerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<Printing>>builder()
+                .result(printingService.getPrintRequestsByPrinterId(printerId, pageable))
                 .build();
     }
 
