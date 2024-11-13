@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -140,7 +141,7 @@ public class PrinterService implements IPrinterService {
             //CHECK PAPER
             int printerPapers = printer.getPapersLeft();
             int docPages = caculatePage(file.getContentType(), file.getInputStream());
-            int requiredPages = cauclateRequiredPages(file, uploadConfigRequest);
+            int requiredPages = caculateRequiredPages(file, uploadConfigRequest);
 
             //CHECK STUDENT'S PAPERS
             var context = SecurityContextHolder.getContext();
@@ -201,11 +202,8 @@ public class PrinterService implements IPrinterService {
 
             ImageReader reader = readers.next();
             reader.setInput(imageInputStream, true);
-
             int pageCount = reader.getNumImages(true);
-
             reader.dispose();
-
             return pageCount;
         }
     }
@@ -228,7 +226,7 @@ public class PrinterService implements IPrinterService {
         }
     }
 
-    public int cauclateRequiredPages(MultipartFile file, UploadConfigRequest uploadConfigRequest) throws IOException {
+    public int caculateRequiredPages(MultipartFile file, UploadConfigRequest uploadConfigRequest) throws IOException {
         int docPages = caculatePage(file.getContentType(), file.getInputStream());
         int changeUpToSidedType = switch (uploadConfigRequest.getSidedType()) {
             case "double" -> 2;
@@ -241,4 +239,12 @@ public class PrinterService implements IPrinterService {
         int numberOfCopies = uploadConfigRequest.getNumberOfCopies();
         return docPages * changeUptoPaperSize * numberOfCopies / changeUpToSidedType;
     }
+
+    @Override
+    public List<Printer> findMatchPrinters(List<String> requiredDocumentType) {
+        return printerRepo.findAll().stream()
+                .filter(printer -> printer.getAvailableDocType().containsAll(requiredDocumentType))
+                .collect(Collectors.toList());
+    }
+
 }
