@@ -95,6 +95,7 @@ public class StudentService implements IStudentService {
             document.setPaperSize(uploadConfig.getPaperSize());
             document.setSidedType(uploadConfig.getSidedType());
             document.setNumberOfCopies(uploadConfig.getNumberOfCopies());
+            document.setColorPrint(uploadConfig.isColorPrint());
 
             //Save document to database
             documentRepo.save(document);

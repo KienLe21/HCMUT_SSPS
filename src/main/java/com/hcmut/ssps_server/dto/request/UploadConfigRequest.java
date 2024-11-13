@@ -20,4 +20,7 @@ public class UploadConfigRequest {
 
     @Min(value = 1, message = "Number of copies must be at least 1")
     int numberOfCopies;
+
+    @NotNull(message = "Color printed is required")
+    boolean isColorPrint;
 }

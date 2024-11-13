@@ -140,24 +140,24 @@ public class PrinterService implements IPrinterService {
         if(availableDocType.contains(fileType)){
             //CHECK PAPER
             int printerPapers = printer.getPapersLeft();
-            int docPages = caculatePage(file.getContentType(), file.getInputStream());
-            int requiredPages = caculateRequiredPages(file, uploadConfigRequest);
+            int requiredPagesForPrinter = caculateRequiredPages(file, uploadConfigRequest);
+            int requiredPagesForStudent = (uploadConfigRequest.isColorPrint())? requiredPagesForPrinter * 2 : requiredPagesForPrinter;
 
             //CHECK STUDENT'S PAPERS
             var context = SecurityContextHolder.getContext();
             Student student = studentRepo.findByUser_Email(context.getAuthentication().getName()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-            if (student.getNumOfPages() < requiredPages) {
+            if (student.getNumOfPages() < requiredPagesForStudent) {
                 return PrintableStatus.STUDENT_NOT_HAVE_ENOUGH_PAGES;
             }
 
             //CHECK PRINTER'S PAPERS
-            if (printerPapers >= requiredPages) {
+            if (printerPapers >= requiredPagesForPrinter) {
                 //MINUS PRINTER PAPERS
-                printer.setPapersLeft(printerPapers - requiredPages);
+                printer.setPapersLeft(printerPapers - requiredPagesForPrinter);
                 printerRepo.save(printer);
 
                 //MINUS STUDENT PAPERS
-                student.setNumOfPages(student.getNumOfPages() - requiredPages);
+                student.setNumOfPages(student.getNumOfPages() - requiredPagesForStudent);
                 studentRepo.save(student);
                 return PrintableStatus.PRINTABLE;
             } else {
