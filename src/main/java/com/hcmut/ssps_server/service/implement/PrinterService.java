@@ -115,8 +115,12 @@ public class PrinterService implements IPrinterService {
     }
 
     @Override
-    public void print(int printerId) {
+    public String print(int printerId) {
         List<Printing> printRequests= printingRepository.findByPrinterToPrintID(printerId);
+
+        if (printRequests.isEmpty())
+            return "Not found any print requests to print";
+
         for (Printing printing : printRequests) {
             if (printing.getExpiredTime() == null) {
                 var context = SecurityContextHolder.getContext();
@@ -126,6 +130,7 @@ public class PrinterService implements IPrinterService {
                 printingLogService.addPrintingLog(printing);
             }
         }
+        return "Printer " + printerId + " printed successfully";
     }
 
     @Override
