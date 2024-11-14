@@ -26,23 +26,14 @@ public interface PrintingLogRepository extends JpaRepository<PrintingLog, Long> 
             "    pl.printing_start_time, " +
             "    d.id AS document_id, " +
             "    d.file_name, " +
-            "    d.file_type, " +
             "    d.number_of_copies, " +
             "    d.page_count, " +
             "    d.paper_size, " +
             "    d.sided_type, " +
-            "    p.id AS printing_id, " +
-            "    p.admin_print_mail AS printing_admin_mail, " +
             "    p.expired_time, " +
-            "    p.printer_to_printid, " +
-            "    p.printing_start_time AS printing_start, " +
-            "    p.student_upload_mail, " +
             "    s.student_id, " +
             "    s.num_of_pages, " +
-            "    u.id AS user_id, " +
-            "    u.email, " +
-            "    u.full_name, " +
-            "    u.role " +
+            "    u.email " +
             "FROM " +
             "    printing_log pl " +
             "LEFT JOIN " +
@@ -83,28 +74,19 @@ public interface PrintingLogRepository extends JpaRepository<PrintingLog, Long> 
             LocalDate printingStartTime = row[4] != null ? ((Timestamp) row[4]).toLocalDateTime().toLocalDate() : null;
             Long documentId = ((Number) row[5]).longValue();
             String fileName = (String) row[6];
-            String fileType = (String) row[7];
-            Integer numberOfCopies = ((Number) row[8]).intValue();
-            Integer pageCount = ((Number) row[9]).intValue();
-            String paperSize = (String) row[10];
-            String sidedType = (String) row[11];
-            Integer printingId = ((Number) row[12]).intValue();
-            String printingAdminMail = (String) row[13];
-            LocalDate expiredTime = row[14] != null ? ((Timestamp) row[14]).toLocalDateTime().toLocalDate() : null;
-            Integer printerToPrintId = ((Number) row[15]).intValue();
-            LocalDate printingStart = ((Timestamp) row[16]).toLocalDateTime().toLocalDate();
-            String studentUploadMail = (String) row[17];
-            Long studentId = row[18] != null ? ((Number) row[18]).longValue() : null;
-            Integer numOfPages = row[19] != null ? ((Number) row[19]).intValue() : null;
-            Long userId = row[20] != null ? ((Number) row[20]).longValue() : null;
-            String email = (String) row[21];
-            String fullName = (String) row[22];
-            String role = (String) row[23];
+            Integer numberOfCopies = ((Number) row[7]).intValue();
+            Integer pageCount = ((Number) row[8]).intValue();
+            String paperSize = (String) row[9];
+            String sidedType = (String) row[10];
+            LocalDate expiredTime = row[11] != null ? ((Timestamp) row[11]).toLocalDateTime().toLocalDate() : null;
+            Long studentId = row[12] != null ? ((Number) row[12]).longValue() : null;
+            Integer numOfPages = row[13] != null ? ((Number) row[13]).intValue() : null;
+            String email = (String) row[14];
 
             AdminPrintingLogResponse response = new AdminPrintingLogResponse(
                     printingLogId, adminPrintMail, printerId, printingEndTime, printingStartTime, documentId, fileName,
-                    fileType, numberOfCopies, pageCount, paperSize, sidedType, printingId, printingAdminMail, expiredTime,
-                    printerToPrintId, printingStart, studentUploadMail, studentId, numOfPages, userId, email, fullName, role
+                    numberOfCopies, pageCount, paperSize, sidedType, expiredTime,
+                    studentId, numOfPages, email
             );
             adminPrintingLogResponses.add(response);
         }
@@ -120,23 +102,14 @@ public interface PrintingLogRepository extends JpaRepository<PrintingLog, Long> 
             "    pl.printing_start_time,\n" +
             "    d.id AS document_id,\n" +
             "    d.file_name,\n" +
-            "    d.file_type,\n" +
             "    d.number_of_copies,\n" +
             "    d.page_count,\n" +
             "    d.paper_size,\n" +
             "    d.sided_type,\n" +
-            "    p.id AS printing_id,\n" +
-            "    p.admin_print_mail AS printing_admin_mail,\n" +
             "    p.expired_time,\n" +
-            "    p.printer_to_printid,\n" +
-            "    p.printing_start_time AS printing_start,\n" +
-            "    p.student_upload_mail,\n" +
             "    s.student_id,\n" +
             "    s.num_of_pages,\n" +
-            "    u.id AS user_id,\n" +
-            "    u.email,\n" +
-            "    u.full_name,\n" +
-            "    u.role\n" +
+            "    u.email \n" +
             "FROM \n" +
             "    printing_log pl\n" +
             "LEFT JOIN \n" +
@@ -164,28 +137,19 @@ public interface PrintingLogRepository extends JpaRepository<PrintingLog, Long> 
         LocalDate printingStartTime = row[4] != null ? ((Timestamp) row[4]).toLocalDateTime().toLocalDate() : null;
         Long documentId = ((Number) row[5]).longValue();
         String fileName = (String) row[6];
-        String fileType = (String) row[7];
-        Integer numberOfCopies = ((Number) row[8]).intValue();
-        Integer pageCount = ((Number) row[9]).intValue();
-        String paperSize = (String) row[10];
-        String sidedType = (String) row[11];
-        Integer printingId = ((Number) row[12]).intValue();
-        String printingAdminMail = (String) row[13];
-        LocalDate expiredTime = row[14] != null ? ((Timestamp) row[14]).toLocalDateTime().toLocalDate() : null;
-        Integer printerToPrintId = ((Number) row[15]).intValue();
-        LocalDate printingStart = ((Timestamp) row[16]).toLocalDateTime().toLocalDate();
-        String studentUploadMail = (String) row[17];
-        Long studentId = row[18] != null ? ((Number) row[18]).longValue() : null;
-        Integer numOfPages = row[19] != null ? ((Number) row[19]).intValue() : null;
-        Long userId = row[20] != null ? ((Number) row[20]).longValue() : null;
-        String email = (String) row[21];
-        String fullName = (String) row[22];
-        String role = (String) row[23];
+        Integer numberOfCopies = ((Number) row[7]).intValue();
+        Integer pageCount = ((Number) row[8]).intValue();
+        String paperSize = (String) row[9];
+        String sidedType = (String) row[10];
+        LocalDate expiredTime = row[11] != null ? ((Timestamp) row[11]).toLocalDateTime().toLocalDate() : null;
+        Long studentId = row[12] != null ? ((Number) row[12]).longValue() : null;
+        Integer numOfPages = row[13] != null ? ((Number) row[13]).intValue() : null;
+        String email = (String) row[14];
 
         AdminPrintingLogResponse response = new AdminPrintingLogResponse(
                 printingLogId, adminPrintMail, printerId, printingEndTime, printingStartTime, documentId, fileName,
-                fileType, numberOfCopies, pageCount, paperSize, sidedType, printingId, printingAdminMail, expiredTime,
-                printerToPrintId, printingStart, studentUploadMail, studentId, numOfPages, userId, email, fullName, role
+                numberOfCopies, pageCount, paperSize, sidedType, expiredTime,
+                studentId, numOfPages, email
         );
         return response;
     }

@@ -66,6 +66,8 @@ public class PrintingLogService implements IPrintingLogService {
      */
     @Override
     public AdminPrintingLogResponse viewPrintLog(Long printingLogId) {
+        printingLogRepository.findById(printingLogId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRINTING_LOG_ID_NOT_FOUND));
         return printingLogRepository.viewPrintLog(printingLogId);
     }
 

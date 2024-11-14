@@ -19,21 +19,12 @@ public class AdminPrintingLogResponse {
     private LocalDate printingStartTime;
     private Long documentId;
     private String fileName;
-    private String fileType;
     private Integer numberOfCopies;
     private Integer pageCount;
     private String paperSize;
     private String sidedType;
-    private Integer printingId;
-    private String printingAdminMail;
     private LocalDate expiredTime;
-    private Integer printerToPrintId;
-    private LocalDate printingStart;
-    private String studentUploadMail;
     private Long studentId;
     private Integer numOfPages;
-    private Long userId;
     private String email;
-    private String fullName;
-    private String role;
 }
