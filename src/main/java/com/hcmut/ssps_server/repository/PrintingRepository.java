@@ -11,5 +11,6 @@ import java.util.List;
 public interface PrintingRepository extends JpaRepository<Printing, Long> {
     List<Printing> findByPrinterToPrintID(int printerToPrintID);
     List<Printing> findByExpiredTimeBefore(LocalDateTime currentTime);
-    Page<Printing> findAllByPrinterToPrintID(int printerToPrintID, Pageable pageable);
+
+    Page<Printing> findAllByPrinterToPrintIDAndExpiredTimeIsNull(int printerToPrintID, Pageable pageable);
 }

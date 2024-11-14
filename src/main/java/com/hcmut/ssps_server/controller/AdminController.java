@@ -220,4 +220,12 @@ public class AdminController {
                 .result(printingService.getPrintRequestsByPrinterId(printerId, pageable))
                 .build();
     }
+
+    @DeleteMapping("/document-expired")
+    ApiResponse<String> checkExpiredDocument() {
+        return ApiResponse.<String>builder()
+                .result(adminService.checkExpiredDocument())
+                .build();
+    }
+
 }
