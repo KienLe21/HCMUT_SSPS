@@ -56,6 +56,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/admin/view-print-log/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/admin/generate-usage-reports").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/admin/view-print-logs").hasAuthority("ROLE_ADMIN")
                         //.requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS).permitAll()
                         //.requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated());
