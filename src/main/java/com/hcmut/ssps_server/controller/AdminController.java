@@ -17,9 +17,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import  java.util.Optional;
+
 
 @RestController
 @RequestMapping("/admin")
@@ -169,11 +172,16 @@ public class AdminController {
      * @return Thông tin printing_log join với document join printing join student join user
      */
     @GetMapping("/view-print-log/{printingLogId}")
-    ApiResponse<AdminPrintingLogResponse> viewPrintLog(
-            @PathVariable Long printingLogId
+    ApiResponse viewPrintLog(
+            @PathVariable Optional<Long> printingLogId
     ) {
+        if (printingLogId.isEmpty()) {
+            return ApiResponse.builder()
+                    .result("PrintingLogId is required in the URL path")
+                    .build();
+        }
         return ApiResponse.<AdminPrintingLogResponse>builder()
-                .result(printingLogService.viewPrintLog(printingLogId))
+                .result(printingLogService.viewPrintLog(printingLogId.get()))
                 .build();
     }
 
@@ -185,9 +193,14 @@ public class AdminController {
      * @return Thông tin số User sử dụng và Số trang in theo Hằng số
      */
     @GetMapping("/generate-usage-reports")
-    ApiResponse<AdminPrintingLogReportResponse> generateUsageReports(
-            @RequestParam Frequency frequency
+    public ApiResponse generateUsageReports(
+            @RequestParam(required = false) Frequency frequency
     ) {
+        if (frequency == null) {
+            return ApiResponse.builder()
+                    .result("Frequency parameter is required")
+                    .build();
+        }
         return ApiResponse.<AdminPrintingLogReportResponse>builder()
                 .result(printingLogService.generateUsageReports(frequency))
                 .build();
