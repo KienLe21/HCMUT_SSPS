@@ -80,11 +80,11 @@ public class AdminController {
 
     @PostMapping("/print/{printerId}")
     ApiResponse<String> print(@PathVariable("printerId") int printerId) {
-        printerService.print(printerId);
         return ApiResponse.<String>builder()
-                .result("Printer " + printerId + " printed successfully")
+                .result(printerService.print(printerId))
                 .build();
     }
+
     @PostMapping("/add-printer")
     ApiResponse<Printer> addPrinter(@RequestBody @Valid PrinterCreationRequest request) {
         return ApiResponse.<Printer>builder()
@@ -149,6 +149,13 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.<List<Printing>>builder()
                 .result(printingService.getPrintRequestsByPrinterId(printerId, pageable))
+                .build();
+    }
+
+    @GetMapping("/match-printers")
+    public ApiResponse<List<Printer>> matchPrinters(@RequestParam List<String> requiredDocumentType) {
+        return ApiResponse.<List<Printer>>builder()
+                .result(printerService.findMatchPrinters(requiredDocumentType))
                 .build();
     }
 }

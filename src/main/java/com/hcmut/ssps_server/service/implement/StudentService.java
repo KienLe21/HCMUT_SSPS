@@ -91,10 +91,11 @@ public class StudentService implements IStudentService {
             Document document = new Document();
             document.setFileName(file.getOriginalFilename());
             document.setFileType(fileType);
-            document.setPageCount(printerService.cauclateRequiredPages(file, uploadConfig));
+            document.setPageCount(printerService.caculateRequiredPages(file, uploadConfig));
             document.setPaperSize(uploadConfig.getPaperSize());
             document.setSidedType(uploadConfig.getSidedType());
             document.setNumberOfCopies(uploadConfig.getNumberOfCopies());
+            document.setColorPrint(uploadConfig.isColorPrint());
 
             //Save document to database
             documentRepo.save(document);

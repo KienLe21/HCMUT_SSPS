@@ -34,4 +34,7 @@ public class Document {
 
     @Column(nullable = false)
     int numberOfCopies;
+
+    @Column(nullable = false)
+    boolean isColorPrint;
 }
