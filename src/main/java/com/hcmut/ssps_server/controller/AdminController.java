@@ -6,11 +6,9 @@ import com.hcmut.ssps_server.dto.request.UserUpdateRequest;
 import com.hcmut.ssps_server.dto.response.*;
 import com.hcmut.ssps_server.enums.Frequency;
 import com.hcmut.ssps_server.model.Printer;
+import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.model.user.User;
-import com.hcmut.ssps_server.service.interf.IAdminService;
-import com.hcmut.ssps_server.service.interf.IPrinterService;
-import com.hcmut.ssps_server.service.interf.IPrintingLogService;
-import com.hcmut.ssps_server.service.interf.IUserService;
+import com.hcmut.ssps_server.service.interf.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,13 +26,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class AdminController {
-    private IAdminService adminService;
+    IAdminService adminService;
 
-    private IUserService userService;
+    IUserService userService;
 
-    private IPrinterService printerService;
+    IPrinterService printerService;
 
-    private IPrintingLogService printingLogService;
+    IPrintingLogService printingLogService;
+
+    IPrintingService printingService;
 
     @PostMapping("/register")
     ApiResponse<User> createAdmin(@RequestBody @Valid UserCreationRequest request) {
@@ -197,6 +197,14 @@ public class AdminController {
     public ApiResponse<List<Printer>> matchPrinters(@RequestParam List<String> requiredDocumentType) {
         return ApiResponse.<List<Printer>>builder()
                 .result(printerService.findMatchPrinters(requiredDocumentType))
+                .build();
+    }
+
+    @GetMapping("/get-print-requests/{printerId}")
+    public ApiResponse<List<Printing>> getPrintRequestsByPrinterId(@PathVariable int printerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<Printing>>builder()
+                .result(printingService.getPrintRequestsByPrinterId(printerId, pageable))
                 .build();
     }
 }
