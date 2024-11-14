@@ -102,8 +102,8 @@ public class StudentController {
                 .build();
     }
 
-    @GetMapping("/match-printers")
-    public ApiResponse<List<Printer>> matchPrinters(@RequestParam List<String> requiredDocumentType) {
+    @PostMapping("/match-printers")
+    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType) {
         return ApiResponse.<List<Printer>>builder()
                 .result(printerService.findMatchPrinters(requiredDocumentType))
                 .build();
