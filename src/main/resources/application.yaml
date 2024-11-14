@@ -6,8 +6,8 @@ server:
 spring:
   datasource:
     url: "jdbc:mysql://localhost:3306/ssps_server"
-    username: root
-    password: Tatcalavie51
+    username: kienle
+    password: kienle@2105
   jpa:
     hibernate:
       ddl-auto: update
