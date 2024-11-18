@@ -2,18 +2,18 @@ package com.hcmut.ssps_server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hcmut.ssps_server.dto.request.StudentCreationRequest;
+import com.hcmut.ssps_server.dto.request.RatingCreationRequest;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
-import com.hcmut.ssps_server.dto.response.ApiResponse;
-import com.hcmut.ssps_server.dto.response.PageResponse;
-import com.hcmut.ssps_server.dto.response.PrintingLogResponse;
-import com.hcmut.ssps_server.dto.response.StudentResponse;
+import com.hcmut.ssps_server.dto.response.*;
 import com.hcmut.ssps_server.model.Document;
 import com.hcmut.ssps_server.model.Printer;
+import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.user.Student;
 import com.hcmut.ssps_server.service.implement.PrinterService;
 import com.hcmut.ssps_server.service.interf.IPrinterService;
+import com.hcmut.ssps_server.service.implement.RatingService;
+import com.hcmut.ssps_server.service.interf.IRatingService;
 import com.hcmut.ssps_server.service.interf.IStudentService;
-import com.hcmut.ssps_server.dto.response.PrintRequestResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/students")
@@ -43,6 +44,7 @@ public class StudentController {
     IStudentService studentService;
     ObjectMapper objectMapper = new ObjectMapper();
     private final PrinterService printerService;
+    private final RatingService ratingService;
 
     @PostMapping("/register")
     public ApiResponse<Student> createStudent(@RequestBody @Valid StudentCreationRequest request) {
@@ -91,12 +93,7 @@ public class StudentController {
     }
     @GetMapping("/print-logs")
     public ApiResponse<List<PrintingLogResponse>> viewPrintLog() {
-        // Get the logged-in user’s email from SecurityContextHolder
-
-
-        // Fetch the printing logs for the student
         List<PrintingLogResponse> logs = studentService.getPrintingLogsForStudent();
-
         return ApiResponse.<List<PrintingLogResponse>>builder()
                 .result(logs)
                 .build();
@@ -138,4 +135,37 @@ public class StudentController {
                 .result(printRequestResponse)
                 .build();
     }
+    @PostMapping("/create-rating")
+    public ApiResponse<RatingResponse> createRating(@RequestBody @Valid RatingCreationRequest request) {
+        Rating createdRating = ratingService.createRating(request);
+        RatingResponse response = new RatingResponse();
+        response.setId(createdRating.getId());
+        response.setRating(createdRating.getRating());
+        response.setComment(createdRating.getComment());
+        response.setPrintingId((long) createdRating.getPrinting().getId());
+
+        return ApiResponse.<RatingResponse>builder()
+                .result(response)
+                .build();
+    }
+
+
+    @GetMapping("/ratings/my-ratings")
+    public ApiResponse<List<RatingResponse>> getRatingOfCurrentStudent() {
+        List<RatingResponse> ratings = ratingService.getRatingOfCurrentStudent();
+        return ApiResponse.<List<RatingResponse>>builder()
+                .result(ratings)
+                .build();
+    }
+
+
+    @PatchMapping("/update-rating/{ratingId}")
+    public ApiResponse<RatingResponse> updateRating(@PathVariable Long ratingId, @RequestBody Map<String, Object> updates) {
+        RatingResponse ratingResponse = ratingService.updateRating(ratingId, updates);
+        return ApiResponse.<RatingResponse>builder()
+                .result(ratingResponse)
+                .build();
+    }
+
+
 }
