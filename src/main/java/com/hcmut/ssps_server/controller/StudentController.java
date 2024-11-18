@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hcmut.ssps_server.dto.request.StudentCreationRequest;
 import com.hcmut.ssps_server.dto.request.RatingCreationRequest;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
-import com.hcmut.ssps_server.dto.response.*;
+import com.hcmut.ssps_server.dto.response.ApiResponse;
+import com.hcmut.ssps_server.dto.response.PageResponse;
+import com.hcmut.ssps_server.dto.response.PrintingLogResponse;
+import com.hcmut.ssps_server.dto.response.StudentResponse;
 import com.hcmut.ssps_server.model.Document;
 import com.hcmut.ssps_server.model.Printer;
 import com.hcmut.ssps_server.model.Rating;
@@ -14,6 +17,7 @@ import com.hcmut.ssps_server.service.interf.IPrinterService;
 import com.hcmut.ssps_server.service.implement.RatingService;
 import com.hcmut.ssps_server.service.interf.IRatingService;
 import com.hcmut.ssps_server.service.interf.IStudentService;
+import com.hcmut.ssps_server.dto.response.PrintRequestResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
@@ -119,6 +129,14 @@ public class StudentController {
         Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.<List<Printer>>builder()
                 .result(printerService.getAllPrinters(pageable))
+                .build();
+    }
+    @GetMapping("/get-print-requests")
+    public ApiResponse<PrintRequestResponse> getPrintRequests() {
+        // Fetch the printing for the student
+        PrintRequestResponse printRequestResponse = studentService.getPrintRequests();
+        return ApiResponse.<PrintRequestResponse>builder()
+                .result(printRequestResponse)
                 .build();
     }
     @PostMapping("/create-rating")

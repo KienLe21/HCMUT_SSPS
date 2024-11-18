@@ -6,6 +6,12 @@ import com.hcmut.ssps_server.dto.request.UserUpdateRequest;
 import com.hcmut.ssps_server.dto.response.*;
 import com.hcmut.ssps_server.enums.Frequency;
 import com.hcmut.ssps_server.model.Printer;
+import com.hcmut.ssps_server.model.Rating;
+import com.hcmut.ssps_server.model.user.User;
+import com.hcmut.ssps_server.service.implement.RatingService;
+import com.hcmut.ssps_server.service.interf.IAdminService;
+import com.hcmut.ssps_server.service.interf.IPrinterService;
+import com.hcmut.ssps_server.service.interf.IUserService;
 import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.model.user.User;
 import com.hcmut.ssps_server.service.interf.*;
@@ -17,12 +23,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import  java.util.Optional;
-
 
 @RestController
 @RequestMapping("/admin")
@@ -34,6 +38,7 @@ public class AdminController {
     IUserService userService;
 
     IPrinterService printerService;
+    private final RatingService ratingService;
 
     IPrintingLogService printingLogService;
 
@@ -225,6 +230,37 @@ public class AdminController {
     ApiResponse<String> checkExpiredDocument() {
         return ApiResponse.<String>builder()
                 .result(adminService.checkExpiredDocument())
+                .build();
+    }
+
+    @GetMapping("/get-all-ratings")
+    ApiResponse<List<Rating>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<Rating>>builder()
+                .result(ratingService.getAllRatings(pageable))
+                .build();
+    }
+
+    @GetMapping("/get-rating-by-printing-id/{printingId}")
+    ApiResponse<Rating> getRatingByPrintingId(@PathVariable int printingId) {
+        return ApiResponse.<Rating>builder()
+                .result(ratingService.getRatingByPrintingId(printingId))
+                .build();
+    }
+
+    @GetMapping("/get-ratings-by-student-id/{studentId}")
+    ApiResponse<List<Rating>> getRatingsByStudentId(@PathVariable Long studentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<Rating>>builder()
+                .result(ratingService.getRatingsByStudentId(studentId, pageable))
+                .build();
+    }
+
+    @DeleteMapping("/delete-rating/{ratingId}")
+    ApiResponse<String> deleteRating(@PathVariable Long ratingId) {
+        ratingService.deleteRating(ratingId);
+        return ApiResponse.<String>builder()
+                .result("Rating deleted successfully")
                 .build();
     }
 

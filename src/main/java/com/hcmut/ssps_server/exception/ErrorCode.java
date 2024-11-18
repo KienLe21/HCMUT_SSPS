@@ -10,8 +10,11 @@ public enum ErrorCode {
     PASSWORD_INVALID(1004, "Password invalid"),
     PRINTER_NOT_FOUND(1005, "Printer not found"),
     PRINT_REQUEST_NOT_FOUND(1006, "Print request not found"),
+    PRINTING_LOG_ID_NOT_FOUND(1007, "Printing log not found"),
+    STUDENT_NOT_FOUND(1008, "Student not found"),
+    RATING_NOT_FOUND(1009, "Rating not found");
     PRINTING_LOG_ID_NOT_FOUND(1007, "Printing log not found");
-
+  
     private int code;
     private String message;
 
