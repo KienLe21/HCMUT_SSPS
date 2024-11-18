@@ -1,6 +1,9 @@
 package com.hcmut.ssps_server.service.implement;
 
+import com.hcmut.ssps_server.dto.response.PrintRequestPartResponse;
+import com.hcmut.ssps_server.dto.response.PrintRequestResponse;
 import com.hcmut.ssps_server.dto.request.StudentCreationRequest;
+import com.hcmut.ssps_server.enums.PrintableStatus;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
 import com.hcmut.ssps_server.dto.response.PrintingLogResponse;
 import com.hcmut.ssps_server.dto.response.StudentResponse;
@@ -30,6 +33,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.List;
@@ -170,5 +174,28 @@ public class StudentService implements IStudentService {
         } catch (Exception e){
             return e.getMessage();
         }
+    }
+
+    @Override
+    public PrintRequestResponse getPrintRequests() {
+        var context = SecurityContextHolder.getContext();
+        String currentEmail = context.getAuthentication().getName();
+        // Kiểm tra sự tồn tại của email
+        studentRepository
+                .findByUser_Email(currentEmail)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        List<PrintRequestPartResponse> allPrints = printingRepository.viewPrintByCurrentEmail(currentEmail);
+        // Phân loại các bản in
+        List<PrintRequestPartResponse> pendingPrints = new ArrayList<>();
+        List<PrintRequestPartResponse> completedPrints = new ArrayList<>();
+        allPrints.forEach(print -> {
+            if (print.getExpiredTime() == null) {
+                pendingPrints.add(print);
+            } else {
+                completedPrints.add(print);
+            }
+        });
+        // Trả về DTO Response
+        return new PrintRequestResponse(pendingPrints, completedPrints);
     }
 }

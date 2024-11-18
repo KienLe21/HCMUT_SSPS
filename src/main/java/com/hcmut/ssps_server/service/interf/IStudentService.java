@@ -1,5 +1,6 @@
 package com.hcmut.ssps_server.service.interf;
 
+import com.hcmut.ssps_server.dto.response.PrintRequestResponse;
 import com.hcmut.ssps_server.dto.request.StudentCreationRequest;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
 import com.hcmut.ssps_server.dto.response.PrintingLogResponse;
@@ -18,4 +19,5 @@ public interface IStudentService {
     Integer recharge(int amount);
     List<PrintingLogResponse> getPrintingLogsForStudent();
     String confirm(Long printingId);
+    PrintRequestResponse getPrintRequests();
 }
