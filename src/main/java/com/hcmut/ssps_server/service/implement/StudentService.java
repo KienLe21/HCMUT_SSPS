@@ -155,9 +155,12 @@ public class StudentService implements IStudentService {
         // Convert each PrintingLog to PrintingLogResponse
         return student.getLogList().stream()
                 .map(log -> new PrintingLogResponse(
-                        log.getPrinterToPrintID(),
+                        log.getId(),
                         log.getDocument().getFileName(),
-                        log.getDocument().getPageCount()))
+                        log.getDocument().getPageCount(),
+                        log.getPrintingStartTime(),
+                        log.getPrintingEndTime(),
+                        log.getPrinterToPrintID()))
                 .collect(Collectors.toList());
     }
 
