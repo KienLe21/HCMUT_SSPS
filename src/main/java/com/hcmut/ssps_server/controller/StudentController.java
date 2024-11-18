@@ -10,6 +10,7 @@ import com.hcmut.ssps_server.dto.response.StudentResponse;
 import com.hcmut.ssps_server.model.Document;
 import com.hcmut.ssps_server.model.Printer;
 import com.hcmut.ssps_server.model.user.Student;
+import com.hcmut.ssps_server.service.implement.PrinterService;
 import com.hcmut.ssps_server.service.interf.IPrinterService;
 import com.hcmut.ssps_server.service.interf.IStudentService;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +18,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +35,7 @@ import java.util.List;
 public class StudentController {
     IStudentService studentService;
     ObjectMapper objectMapper = new ObjectMapper();
+    private final PrinterService printerService;
 
     @PostMapping("/register")
     public ApiResponse<Student> createStudent(@RequestBody @Valid StudentCreationRequest request) {
@@ -93,9 +97,30 @@ public class StudentController {
 
     @PostMapping("/confirm-receive")
     public ApiResponse<String> confirmReceive(@RequestParam int printingId) {
-
         return ApiResponse.<String>builder()
                 .result(studentService.confirm((long) printingId))
+                .build();
+    }
+
+    @PostMapping("/match-printers")
+    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType) {
+        return ApiResponse.<List<Printer>>builder()
+                .result(printerService.findMatchPrinters(requiredDocumentType))
+                .build();
+    }
+
+    @GetMapping("/get-printer/{printerId}")
+    ApiResponse<Printer> getPrinter(@PathVariable Long printerId) {
+        return ApiResponse.<Printer>builder()
+                .result(printerService.getPrinter(printerId))
+                .build();
+    }
+
+    @GetMapping("/get-all-printers")
+    ApiResponse<List<Printer>> getAllPrinters(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<Printer>>builder()
+                .result(printerService.getAllPrinters(pageable))
                 .build();
     }
 }

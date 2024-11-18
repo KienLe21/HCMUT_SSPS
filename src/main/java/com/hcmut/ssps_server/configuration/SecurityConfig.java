@@ -45,6 +45,7 @@ public class SecurityConfig {
     @Value("${jwt.signerKey}")
     private String signerKey;
 
+    // Đừng sửa cái này của tui nha :))
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.cors().and().authorizeHttpRequests(request ->
@@ -56,6 +57,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.DELETE, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.PUT, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, STUDENT_ENDPOINTS).hasAuthority("ROLE_STUDENT")
+                        .requestMatchers(HttpMethod.PUT, STUDENT_ENDPOINTS).hasAuthority("ROLE_STUDENT")
+                        .requestMatchers(HttpMethod.PATCH, ADMIN_ENDPOINTS).hasAuthority("ROLE_ADMIN")
                         //.requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINTS).permitAll()
                         //.requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINTS).permitAll()
                         .anyRequest().authenticated());

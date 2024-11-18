@@ -13,6 +13,8 @@ public enum ErrorCode {
     PRINTING_LOG_ID_NOT_FOUND(1007, "Printing log not found"),
     STUDENT_NOT_FOUND(1008, "Student not found"),
     RATING_NOT_FOUND(1009, "Rating not found");
+    PRINTING_LOG_ID_NOT_FOUND(1007, "Printing log not found");
+  
     private int code;
     private String message;
 

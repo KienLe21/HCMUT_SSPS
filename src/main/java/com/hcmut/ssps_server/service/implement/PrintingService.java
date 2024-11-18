@@ -1,5 +1,7 @@
 package com.hcmut.ssps_server.service.implement;
 
+import com.hcmut.ssps_server.exception.AppException;
+import com.hcmut.ssps_server.exception.ErrorCode;
 import com.hcmut.ssps_server.model.Document;
 import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.repository.PrintingRepository;
@@ -8,10 +10,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,16 @@ public class PrintingService implements IPrintingService {
         var context = SecurityContextHolder.getContext();
         printing.setStudentUploadMail(context.getAuthentication().getName());
         printingRepository.save(printing);
+    }
+
+    @Override
+    public List<Printing> getPrintRequestsByPrinterId(int printerId, Pageable pageable) {
+        Page<Printing> printingPage = printingRepository.findAllByPrinterToPrintIDAndExpiredTimeIsNull(printerId, pageable);
+        if (printingPage.isEmpty()) {
+            throw new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND);
+        }
+        List<Printing> printingList = printingPage.getContent();
+        return printingList;
     }
 
     //3 TRƯỜNG HỢP: STUDENT CONFIRM RECEIVE DOC hoặc MÁY IN BỊ LỖI NÊN HỦY YÊU CẦU ĐANG TỒN TẠI hoặc TÀI LIỆU HẾT THỜI GIAN TỒN TẠI

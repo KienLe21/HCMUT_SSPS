@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -35,9 +34,15 @@ import  java.util.Optional;
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 public class AdminController {
     IAdminService adminService;
+
     IUserService userService;
+
     IPrinterService printerService;
     private final RatingService ratingService;
+
+    IPrintingLogService printingLogService;
+
+    IPrintingService printingService;
 
     @PostMapping("/register")
     ApiResponse<User> createAdmin(@RequestBody @Valid UserCreationRequest request) {
@@ -69,7 +74,7 @@ public class AdminController {
     }
 
     @PutMapping("/update-user/{userId}")
-    ApiResponse<UserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody UserUpdateRequest request ) {
+    ApiResponse<UserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody UserUpdateRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.updateUser(userId, request))
                 .build();
@@ -85,11 +90,11 @@ public class AdminController {
 
     @PostMapping("/print/{printerId}")
     ApiResponse<String> print(@PathVariable("printerId") int printerId) {
-        printerService.print(printerId);
         return ApiResponse.<String>builder()
-                .result("Printer " + printerId + " printed successfully")
+                .result(printerService.print(printerId))
                 .build();
     }
+
     @PostMapping("/add-printer")
     ApiResponse<Printer> addPrinter(@RequestBody @Valid PrinterCreationRequest request) {
         return ApiResponse.<Printer>builder()
@@ -142,12 +147,92 @@ public class AdminController {
                 .result("Printer disabled successfully")
                 .build();
     }
+
+    /**
+     * API cho phép SPSO xem toàn bộ nhật ký của các hoạt động in ấn, có thể bao gồm thông tin chi tiết như ngày giờ,
+     * số trang in và thông tin người dùng.
+     *
+     * @param startDate Ngày bắt đầu tìm kiếm
+     * @param endDate   Ngày kết thúc tìm kiếm
+     * @return Danh sách printing_log join với document join printing join student join user
+     */
+    @GetMapping("/view-print-logs")
+    ApiResponse<Page<AdminPrintingLogResponse>> viewAllPrintLog(
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "3") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<Page<AdminPrintingLogResponse>>builder()
+                .result(printingLogService.viewAllPrintLog(startDate, endDate, pageable))
+                .build();
+    }
+
+    /**
+     * API cho phép SPSO xem chi tiết nhật ký của các hoạt động in ấn, có thể bao gồm thông tin chi tiết như ngày giờ,
+     * số trang in và thông tin người dùng.
+     *
+     * @param printingLogId Id của bản ghi printing Log Id
+     * @return Thông tin printing_log join với document join printing join student join user
+     */
+    @GetMapping("/view-print-log/{printingLogId}")
+    ApiResponse viewPrintLog(
+            @PathVariable Optional<Long> printingLogId
+    ) {
+        if (printingLogId.isEmpty()) {
+            return ApiResponse.builder()
+                    .result("PrintingLogId is required in the URL path")
+                    .build();
+        }
+        return ApiResponse.<AdminPrintingLogResponse>builder()
+                .result(printingLogService.viewPrintLog(printingLogId.get()))
+                .build();
+    }
+
+    /**
+     * API Phương thức này chịu trách nhiệm tạo hoặc cập nhật các báo cáo sử dụng dựa trên dữ liệu mới nhất.
+     * Nó giúp SPSO theo dõi các hoạt động in ấn và hiểu được nhu cầu sử dụng dịch vụ.
+     *
+     * @param frequency Hằng số bao gồm Tháng, Quý, Năm
+     * @return Thông tin số User sử dụng và Số trang in theo Hằng số
+     */
+    @GetMapping("/generate-usage-reports")
+    public ApiResponse generateUsageReports(
+            @RequestParam(required = false) Frequency frequency
+    ) {
+        if (frequency == null) {
+            return ApiResponse.builder()
+                    .result("Frequency parameter is required")
+                    .build();
+        }
+        return ApiResponse.<AdminPrintingLogReportResponse>builder()
+                .result(printingLogService.generateUsageReports(frequency))
+                .build();
+    }
+
+    @PostMapping("/match-printers")
+    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType) {
+        return ApiResponse.<List<Printer>>builder()
+                .result(printerService.findMatchPrinters(requiredDocumentType))
+                .build();
+    }
+
+    @GetMapping("/get-print-requests/{printerId}")
+    public ApiResponse<List<Printing>> getPrintRequestsByPrinterId(@PathVariable int printerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<Printing>>builder()
+                .result(printingService.getPrintRequestsByPrinterId(printerId, pageable))
+                .build();
+    }
+
     @DeleteMapping("/document-expired")
     ApiResponse<String> checkExpiredDocument() {
         return ApiResponse.<String>builder()
                 .result(adminService.checkExpiredDocument())
                 .build();
     }
+
     @GetMapping("/get-all-ratings")
     ApiResponse<List<Rating>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -178,4 +263,5 @@ public class AdminController {
                 .result("Rating deleted successfully")
                 .build();
     }
+
 }
