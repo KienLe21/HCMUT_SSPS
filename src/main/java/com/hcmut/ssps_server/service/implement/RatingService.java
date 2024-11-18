@@ -41,30 +41,21 @@ public class RatingService implements IRatingService {
     RatingRepository ratingRepo;
     StudentRepository studentRepo;
     PrintingRepository printingRepo;
-    @Override
-    public Rating createRating(Rating rating) {
-        return null;
-    }
 
     @Override
     public List<Rating> getAllRatings(Pageable pageable) {
-        Page<Rating> ratingList =  ratingRepository.findAll(pageable);
+        Page<Rating> ratingList =  ratingRepo.findAll(pageable);
         return ratingList.getContent();
     }
 
     @Override
-    public List<Rating> getRatingOfCurrentStudent() {
-        return null;
-    }
-
-    @Override
     public Rating getRatingByPrintingId(int printingId) {
-        return ratingRepository.findById((long) printingId).orElseThrow(()->new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND));
+        return ratingRepo.findById((long) printingId).orElseThrow(()->new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND));
     }
 
     @Override
     public List<Rating> getRatingsByStudentId(Long studentId, Pageable pageable) {
-        Page<Rating> ratingList =  ratingRepository.findById(studentId, pageable);
+        Page<Rating> ratingList =  ratingRepo.findById(studentId, pageable);
         if (ratingList.isEmpty()) {
             throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
         }
@@ -72,16 +63,11 @@ public class RatingService implements IRatingService {
     }
 
     @Override
-    public Rating updateRating(Rating rating) {
-        return null;
-    }
-
-    @Override
     public void deleteRating(Long ratingId) {
-        if (!ratingRepository.existsById(ratingId)) {
+        if (!ratingRepo.existsById(ratingId)) {
             throw new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND);
         }
-        ratingRepository.deleteById(ratingId);
+        ratingRepo.deleteById(ratingId);
     }
     @Override
     public Rating createRating(RatingCreationRequest request) {
