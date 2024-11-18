@@ -1,11 +1,10 @@
 package com.hcmut.ssps_server.controller;
 
+import com.hcmut.ssps_server.dto.request.PrinterCreationRequest;
 import com.hcmut.ssps_server.dto.request.UserCreationRequest;
 import com.hcmut.ssps_server.dto.request.UserUpdateRequest;
-import com.hcmut.ssps_server.dto.request.PrinterCreationRequest;
-import com.hcmut.ssps_server.dto.response.ApiResponse;
-import com.hcmut.ssps_server.dto.response.StudentResponse;
-import com.hcmut.ssps_server.dto.response.UserResponse;
+import com.hcmut.ssps_server.dto.response.*;
+import com.hcmut.ssps_server.enums.Frequency;
 import com.hcmut.ssps_server.model.Printer;
 import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.user.User;
@@ -13,6 +12,9 @@ import com.hcmut.ssps_server.service.implement.RatingService;
 import com.hcmut.ssps_server.service.interf.IAdminService;
 import com.hcmut.ssps_server.service.interf.IPrinterService;
 import com.hcmut.ssps_server.service.interf.IUserService;
+import com.hcmut.ssps_server.model.Printing;
+import com.hcmut.ssps_server.model.user.User;
+import com.hcmut.ssps_server.service.interf.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,8 +23,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import  java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
