@@ -13,6 +13,8 @@ import com.hcmut.ssps_server.model.user.Student;
 import com.hcmut.ssps_server.repository.PrinterRepository;
 import com.hcmut.ssps_server.repository.PrintingRepository;
 import com.hcmut.ssps_server.repository.UserRepository.StudentRepository;
+import com.hcmut.ssps_server.repository.UserRepository.UserRepository;
+import com.hcmut.ssps_server.service.EmailService;
 import com.hcmut.ssps_server.service.interf.IPrinterService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,8 @@ public class PrinterService implements IPrinterService {
     PrintingLogService printingLogService;
     PrinterRepository printerRepo;
     StudentRepository studentRepo;
+    UserRepository userRepository;
+    EmailService emailService;
 
     @Override
     public Printer addPrinter(PrinterCreationRequest request) {
@@ -128,6 +132,13 @@ public class PrinterService implements IPrinterService {
                 printing.setExpiredTime(LocalDateTime.now().plusHours(2));
                 printingRepository.save(printing);
                 printingLogService.addPrintingLog(printing);
+
+                //SEND EMAIL TO STUDENT
+                var user = userRepository.findByEmail(printing.getStudentUploadMail()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+                var document = printing.getDocument();
+                String subject = emailService.generateEmailSubject(document.getFileName());
+                String content = emailService.generateEmailContent(user.getFullName(), document.getFileName());
+                emailService.sendEmail(user.getEmail(), subject, content);
             }
         }
         return "Printer " + printerId + " printed successfully";
