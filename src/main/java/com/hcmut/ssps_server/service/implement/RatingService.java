@@ -1,8 +1,10 @@
 package com.hcmut.ssps_server.service.implement;
 
+import com.hcmut.ssps_server.dto.response.AdminRatingResponse;
 import com.hcmut.ssps_server.dto.response.StudentResponse;
 import com.hcmut.ssps_server.exception.AppException;
 import com.hcmut.ssps_server.exception.ErrorCode;
+import com.hcmut.ssps_server.mapper.AdminRatingMapper;
 import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.user.Student;
 import com.hcmut.ssps_server.repository.RatingRepository;
@@ -12,6 +14,7 @@ import java.util.*;
 
 import com.hcmut.ssps_server.dto.request.RatingCreationRequest;
 import com.hcmut.ssps_server.dto.response.RatingResponse;
+import com.hcmut.ssps_server.dto.response.AdminRatingResponse;
 import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.model.user.Student;
@@ -41,25 +44,29 @@ public class RatingService implements IRatingService {
     RatingRepository ratingRepo;
     StudentRepository studentRepo;
     PrintingRepository printingRepo;
-
+    AdminRatingMapper adminRatingMapper;
     @Override
-    public List<Rating> getAllRatings(Pageable pageable) {
-        Page<Rating> ratingList =  ratingRepo.findAll(pageable);
-        return ratingList.getContent();
-    }
-
-    @Override
-    public Rating getRatingByPrintingId(int printingId) {
-        return ratingRepo.findById((long) printingId).orElseThrow(()->new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND));
-    }
-
-    @Override
-    public List<Rating> getRatingsByStudentId(Long studentId, Pageable pageable) {
-        Page<Rating> ratingList =  ratingRepo.findById(studentId, pageable);
-        if (ratingList.isEmpty()) {
-            throw new AppException(ErrorCode.STUDENT_NOT_FOUND);
+    public List<AdminRatingResponse> getAllRatings(Pageable pageable) {
+        Page<AdminRatingResponse> ratingPage =  ratingRepo.findAll(pageable).map(adminRatingMapper::toAdminRatingResponse);
+        List<AdminRatingResponse> ratingList = ratingPage.getContent();
+        if(ratingList.isEmpty()){
+            throw new AppException(ErrorCode.RATING_NOT_FOUND);
         }
-        return ratingList.getContent();
+        return  ratingList;
+    }
+
+    @Override
+    public List<AdminRatingResponse> getRatingByPrintingId(Long printingId, Pageable pageable) {
+        Printing printing = printingRepo.findById(printingId).orElseThrow(() -> new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND));;
+        Page<AdminRatingResponse> ratingPage =  ratingRepo.findByPrinting(printing, pageable).map(adminRatingMapper::toAdminRatingResponse);
+        return ratingPage.getContent();
+    }
+
+    @Override
+    public List<AdminRatingResponse> getRatingsByStudentId(Long studentId, Pageable pageable) {
+        Student student = studentRepo.findById(studentId).orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
+        Page<AdminRatingResponse> ratingPage =  ratingRepo.findByStudent(student,pageable).map(adminRatingMapper::toAdminRatingResponse);
+        return ratingPage.getContent();
     }
 
     @Override
