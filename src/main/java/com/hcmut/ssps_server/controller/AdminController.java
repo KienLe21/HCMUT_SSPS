@@ -208,9 +208,10 @@ public class AdminController {
     }
 
     @PostMapping("/match-printers")
-    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType) {
+    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.<List<Printer>>builder()
-                .result(printerService.findMatchPrinters(requiredDocumentType))
+                .result(printerService.findMatchPrinters(requiredDocumentType, pageable))
                 .build();
     }
 
