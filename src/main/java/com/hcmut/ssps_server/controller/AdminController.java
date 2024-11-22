@@ -6,14 +6,10 @@ import com.hcmut.ssps_server.dto.request.UserUpdateRequest;
 import com.hcmut.ssps_server.dto.response.*;
 import com.hcmut.ssps_server.enums.Frequency;
 import com.hcmut.ssps_server.model.Printer;
+import com.hcmut.ssps_server.model.Printing;
 import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.user.User;
 import com.hcmut.ssps_server.service.implement.RatingService;
-import com.hcmut.ssps_server.service.interf.IAdminService;
-import com.hcmut.ssps_server.service.interf.IPrinterService;
-import com.hcmut.ssps_server.service.interf.IUserService;
-import com.hcmut.ssps_server.model.Printing;
-import com.hcmut.ssps_server.model.user.User;
 import com.hcmut.ssps_server.service.interf.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -220,9 +216,10 @@ public class AdminController {
     }
 
     @PostMapping("/match-printers")
-    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType) {
+    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.<List<Printer>>builder()
-                .result(printerService.findMatchPrinters(requiredDocumentType))
+                .result(printerService.findMatchPrinters(requiredDocumentType, pageable))
                 .build();
     }
 
@@ -242,24 +239,25 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-ratings")
-    ApiResponse<List<Rating>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<AdminRatingResponse>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ApiResponse.<List<Rating>>builder()
+        return ApiResponse.<List<AdminRatingResponse>>builder()
                 .result(ratingService.getAllRatings(pageable))
                 .build();
     }
 
     @GetMapping("/get-rating-by-printing-id/{printingId}")
-    ApiResponse<Rating> getRatingByPrintingId(@PathVariable int printingId) {
-        return ApiResponse.<Rating>builder()
-                .result(ratingService.getRatingByPrintingId(printingId))
+    ApiResponse<List<AdminRatingResponse>> getRatingByPrintingId(@PathVariable Long printingId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ApiResponse.<List<AdminRatingResponse>>builder()
+                .result(ratingService.getRatingByPrintingId(printingId, pageable))
                 .build();
     }
 
     @GetMapping("/get-ratings-by-student-id/{studentId}")
-    ApiResponse<List<Rating>> getRatingsByStudentId(@PathVariable Long studentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<AdminRatingResponse>> getRatingsByStudentId(@PathVariable Long studentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ApiResponse.<List<Rating>>builder()
+        return ApiResponse.<List<AdminRatingResponse>>builder()
                 .result(ratingService.getRatingsByStudentId(studentId, pageable))
                 .build();
     }
