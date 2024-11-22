@@ -4,6 +4,7 @@ import com.hcmut.ssps_server.dto.request.PrinterCreationRequest;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
 import com.hcmut.ssps_server.enums.PrintableStatus;
 import com.hcmut.ssps_server.model.Printer;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +16,7 @@ public interface IPrinterService {
     Printer addPrinter(PrinterCreationRequest request);
     Printer updatePrinter(Long printerId, Map<String, Object> updates);
     Printer getPrinter(Long printerId);
-    List<Printer> getAllPrinters(Pageable pageable);
+    Page<Printer> getAllPrinters(Pageable pageable);
     void deletePrinter(Long printerId);
     void enablePrinter(Long printerId);
     void disablePrinter(Long printerId);

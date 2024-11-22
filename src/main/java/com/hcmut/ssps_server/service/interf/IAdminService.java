@@ -13,7 +13,7 @@ import java.util.List;
 public interface IAdminService {
     User createAdmin(UserCreationRequest request);
     StudentResponse getStudent(Long studentId);
-    List<StudentResponse> getAllStudents(Pageable pageable);
+    Page<StudentResponse> getAllStudents(Pageable pageable);
     UserResponse getMyInfo();
     String checkExpiredDocument();
 }

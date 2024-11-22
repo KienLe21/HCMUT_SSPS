@@ -22,6 +22,7 @@ import lombok.experimental.FieldDefaults;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,8 +82,8 @@ public class PrinterService implements IPrinterService {
     }
 
     @Override
-    public List<Printer> getAllPrinters(Pageable pageable) {
-        return printerRepo.findAll(pageable).getContent();
+    public Page<Printer> getAllPrinters(Pageable pageable) {
+        return printerRepo.findAll(pageable);
     }
 
     @Override

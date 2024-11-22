@@ -68,8 +68,12 @@ public class AdminController {
     @GetMapping("/get-all-students")
     ApiResponse<List<StudentResponse>> getAllStudents(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page studentPage = adminService.getAllStudents(pageable);
         return ApiResponse.<List<StudentResponse>>builder()
-                .result(adminService.getAllStudents(pageable))
+                .result(studentPage.getContent())
+                .currentPage(studentPage.getNumber())
+                .totalElements(studentPage.getTotalElements())
+                .totalPages(studentPage.getTotalPages())
                 .build();
     }
 
@@ -119,8 +123,12 @@ public class AdminController {
     @GetMapping("/get-all-printers")
     ApiResponse<List<Printer>> getAllPrinters(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page printerPage = printerService.getAllPrinters(pageable);
         return ApiResponse.<List<Printer>>builder()
-                .result(printerService.getAllPrinters(pageable))
+                .result(printerPage.getContent())
+                .currentPage(printerPage.getNumber())
+                .totalElements(printerPage.getTotalElements())
+                .totalPages(printerPage.getTotalPages())
                 .build();
     }
 

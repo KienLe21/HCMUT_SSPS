@@ -59,10 +59,9 @@ public class AdminService implements IAdminService {
     }
 
     @Override
-    public List<StudentResponse> getAllStudents(Pageable pageable) {
+    public Page<StudentResponse> getAllStudents(Pageable pageable) {
         Page<StudentResponse> studentResponsePage = studentRepository.findAllStudents(pageable).map(studentMapper::toStudentResponse);
-        List<StudentResponse> studentResponseList = studentResponsePage.getContent();
-        return studentResponseList;
+        return studentResponsePage;
     }
 
     @Override

@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -123,10 +124,15 @@ public class StudentController {
     @GetMapping("/get-all-printers")
     ApiResponse<List<Printer>> getAllPrinters(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page printerPage = printerService.getAllPrinters(pageable);
         return ApiResponse.<List<Printer>>builder()
-                .result(printerService.getAllPrinters(pageable))
+                .result(printerPage.getContent())
+                .currentPage(printerPage.getNumber())
+                .totalElements(printerPage.getTotalElements())
+                .totalPages(printerPage.getTotalPages())
                 .build();
     }
+
     @GetMapping("/get-print-requests")
     public ApiResponse<PrintRequestResponse> getPrintRequests() {
         // Fetch the printing for the student
