@@ -246,8 +246,8 @@ public class PrinterService implements IPrinterService {
     }
 
     @Override
-    public List<Printer> findMatchPrinters(List<String> requiredDocumentType) {
-        return printerRepo.findAll().stream()
+    public List<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable) {
+        return printerRepo.findAll(pageable).getContent().stream()
                 .filter(printer -> printer.getAvailableDocType().containsAll(requiredDocumentType))
                 .collect(Collectors.toList());
     }

@@ -21,5 +21,5 @@ public interface IPrinterService {
     void disablePrinter(Long printerId);
     String print(int printerId);
     PrintableStatus isPrintable(MultipartFile file, UploadConfigRequest uploadConfigRequest) throws IOException;
-    List<Printer> findMatchPrinters(List<String> requiredDocumentType);
+    List<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable);
 }
