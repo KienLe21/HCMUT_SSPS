@@ -23,6 +23,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -258,10 +259,11 @@ public class PrinterService implements IPrinterService {
     }
 
     @Override
-    public List<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable) {
-        return printerRepo.findAll(pageable).getContent().stream()
-                .filter(printer -> printer.getAvailableDocType().containsAll(requiredDocumentType))
+    public Page<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable) {
+        List<Printer> allPrinters = printerRepo.findAll();
+        List<Printer> filteredPrinters = allPrinters.stream()
+                .filter(printer -> new HashSet<>(printer.getAvailableDocType()).containsAll(requiredDocumentType))
                 .collect(Collectors.toList());
+        return new PageImpl<>(filteredPrinters, pageable, filteredPrinters.size());
     }
-
 }

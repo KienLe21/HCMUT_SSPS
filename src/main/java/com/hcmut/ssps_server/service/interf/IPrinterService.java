@@ -4,6 +4,7 @@ import com.hcmut.ssps_server.dto.request.PrinterCreationRequest;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
 import com.hcmut.ssps_server.enums.PrintableStatus;
 import com.hcmut.ssps_server.model.Printer;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,5 +23,5 @@ public interface IPrinterService {
     void disablePrinter(Long printerId);
     String print(int printerId);
     PrintableStatus isPrintable(MultipartFile file, UploadConfigRequest uploadConfigRequest) throws IOException;
-    List<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable);
+    Page<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable);
 }
