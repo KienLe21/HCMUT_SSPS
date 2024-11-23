@@ -245,24 +245,36 @@ public class AdminController {
     @GetMapping("/get-all-ratings")
     ApiResponse<List<AdminRatingResponse>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<AdminRatingResponse> ratingPages = ratingService.getAllRatings(pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
-                .result(ratingService.getAllRatings(pageable))
+                .result(ratingPages.getContent())
+                .currentPage(ratingPages.getNumber())
+                .totalElements(ratingPages.getTotalElements())
+                .totalPages(ratingPages.getTotalPages())
                 .build();
     }
 
     @GetMapping("/get-rating-by-printing-id/{printingId}")
     ApiResponse<List<AdminRatingResponse>> getRatingByPrintingId(@PathVariable Long printingId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<AdminRatingResponse> ratingPages = ratingService.getRatingByPrintingId(printingId, pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
-                .result(ratingService.getRatingByPrintingId(printingId, pageable))
+                .result(ratingPages.getContent())
+                .currentPage(ratingPages.getNumber())
+                .totalElements(ratingPages.getTotalElements())
+                .totalPages(ratingPages.getTotalPages())
                 .build();
     }
 
     @GetMapping("/get-ratings-by-student-id/{studentId}")
     ApiResponse<List<AdminRatingResponse>> getRatingsByStudentId(@PathVariable Long studentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<AdminRatingResponse> ratingPages = ratingService.getRatingsByStudentId(studentId, pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
-                .result(ratingService.getRatingsByStudentId(studentId, pageable))
+                .result(ratingPages.getContent())
+                .currentPage(ratingPages.getNumber())
+                .totalElements(ratingPages.getTotalElements())
+                .totalPages(ratingPages.getTotalPages())
                 .build();
     }
 
