@@ -129,7 +129,7 @@ public class StudentController {
     @GetMapping("/get-all-printers")
     ApiResponse<List<Printer>> getAllPrinters(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page printerPage = printerService.getAllPrinters(pageable);
+        Page<Printer> printerPage = printerService.getAllPrinters(pageable);
         return ApiResponse.<List<Printer>>builder()
                 .result(printerPage.getContent())
                 .currentPage(printerPage.getNumber())
