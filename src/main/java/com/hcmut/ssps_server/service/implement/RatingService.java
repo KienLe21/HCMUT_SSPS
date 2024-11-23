@@ -46,27 +46,24 @@ public class RatingService implements IRatingService {
     PrintingRepository printingRepo;
     AdminRatingMapper adminRatingMapper;
     @Override
-    public List<AdminRatingResponse> getAllRatings(Pageable pageable) {
+    public Page<AdminRatingResponse> getAllRatings(Pageable pageable) {
         Page<AdminRatingResponse> ratingPage =  ratingRepo.findAll(pageable).map(adminRatingMapper::toAdminRatingResponse);
-        List<AdminRatingResponse> ratingList = ratingPage.getContent();
-        if(ratingList.isEmpty()){
+        if(ratingPage.isEmpty()){
             throw new AppException(ErrorCode.RATING_NOT_FOUND);
         }
-        return  ratingList;
+        return  ratingPage;
     }
 
     @Override
-    public List<AdminRatingResponse> getRatingByPrintingId(Long printingId, Pageable pageable) {
+    public Page<AdminRatingResponse> getRatingByPrintingId(Long printingId, Pageable pageable) {
         Printing printing = printingRepo.findById(printingId).orElseThrow(() -> new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND));;
-        Page<AdminRatingResponse> ratingPage =  ratingRepo.findByPrinting(printing, pageable).map(adminRatingMapper::toAdminRatingResponse);
-        return ratingPage.getContent();
+        return ratingRepo.findByPrinting(printing, pageable).map(adminRatingMapper::toAdminRatingResponse);
     }
 
     @Override
-    public List<AdminRatingResponse> getRatingsByStudentId(Long studentId, Pageable pageable) {
+    public Page<AdminRatingResponse> getRatingsByStudentId(Long studentId, Pageable pageable) {
         Student student = studentRepo.findById(studentId).orElseThrow(() -> new AppException(ErrorCode.STUDENT_NOT_FOUND));
-        Page<AdminRatingResponse> ratingPage =  ratingRepo.findByStudent(student,pageable).map(adminRatingMapper::toAdminRatingResponse);
-        return ratingPage.getContent();
+        return ratingRepo.findByStudent(student,pageable).map(adminRatingMapper::toAdminRatingResponse);
     }
 
     @Override
