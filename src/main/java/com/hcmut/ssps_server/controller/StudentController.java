@@ -179,5 +179,12 @@ public class StudentController {
                 .build();
     }
 
+    @DeleteMapping("/delete-rating/{ratingId}")
+    ApiResponse<String> deleteRating(@PathVariable Long ratingId) {
+        ratingService.deleteRating(ratingId);
+        return ApiResponse.<String>builder()
+                .result("Rating deleted successfully")
+                .build();
+    }
 
 }
