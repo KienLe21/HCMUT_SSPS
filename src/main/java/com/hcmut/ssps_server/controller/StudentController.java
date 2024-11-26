@@ -1,6 +1,7 @@
 package com.hcmut.ssps_server.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hcmut.ssps_server.dto.request.PrinterRequest;
 import com.hcmut.ssps_server.dto.request.StudentCreationRequest;
 import com.hcmut.ssps_server.dto.request.RatingCreationRequest;
 import com.hcmut.ssps_server.dto.request.UploadConfigRequest;
@@ -108,9 +109,9 @@ public class StudentController {
     }
 
     @PostMapping("/match-printers")
-    public ApiResponse<List<Printer>> matchPrinters(@RequestBody @Valid List<String> requiredDocumentType, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Printer> printerPage = printerService.findMatchPrinters(requiredDocumentType, pageable);
+    public ApiResponse<List<Printer>> matchPrinters(@RequestBody PrinterRequest request) {
+        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Page<Printer> printerPage = printerService.findMatchPrinters(request.getRequiredDocumentType(), pageable);
         return ApiResponse.<List<Printer>>builder()
                 .result(printerPage.getContent())
                 .currentPage(printerPage.getNumber())
