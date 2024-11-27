@@ -5,8 +5,10 @@ import com.hcmut.ssps_server.dto.response.StudentResponse;
 import com.hcmut.ssps_server.exception.AppException;
 import com.hcmut.ssps_server.exception.ErrorCode;
 import com.hcmut.ssps_server.mapper.AdminRatingMapper;
+import com.hcmut.ssps_server.model.PrintingLog;
 import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.user.Student;
+import com.hcmut.ssps_server.repository.PrintingLogRepository;
 import com.hcmut.ssps_server.repository.RatingRepository;
 import com.hcmut.ssps_server.repository.UserRepository.StudentRepository;
 import com.hcmut.ssps_server.service.interf.IRatingService;
@@ -43,7 +45,7 @@ import java.util.stream.Collectors;
 public class RatingService implements IRatingService {
     RatingRepository ratingRepo;
     StudentRepository studentRepo;
-    PrintingRepository printingRepo;
+    PrintingLogRepository printingLogRepo;
     AdminRatingMapper adminRatingMapper;
     @Override
     public Page<AdminRatingResponse> getAllRatings(Pageable pageable) {
@@ -55,9 +57,9 @@ public class RatingService implements IRatingService {
     }
 
     @Override
-    public Page<AdminRatingResponse> getRatingByPrintingId(Long printingId, Pageable pageable) {
-        Printing printing = printingRepo.findById(printingId).orElseThrow(() -> new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND));;
-        return ratingRepo.findByPrinting(printing, pageable).map(adminRatingMapper::toAdminRatingResponse);
+    public Page<AdminRatingResponse> getRatingByPrintingLogId(Long printingLogId, Pageable pageable) {
+        PrintingLog printingLog = printingLogRepo.findById(printingLogId).orElseThrow(() -> new AppException(ErrorCode.PRINTING_LOG_ID_NOT_FOUND));;
+        return ratingRepo.findByPrintingLog(printingLog, pageable).map(adminRatingMapper::toAdminRatingResponse);
     }
 
     @Override
@@ -79,13 +81,13 @@ public class RatingService implements IRatingService {
         String email = context.getAuthentication().getName();
         Student student = studentRepo.findByUser_Email(email)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
-        Printing printing = printingRepo.findById(request.getPrintingId())
-                .orElseThrow(() -> new RuntimeException("Printing not found"));
+        PrintingLog printingLog = printingLogRepo.findById(request.getPrintingId())
+                .orElseThrow(() -> new AppException(ErrorCode.PRINTING_LOG_ID_NOT_FOUND));
 
         Rating rating = new Rating();
         rating.setRating(request.getRating());
         rating.setComment(request.getComment());
-        rating.setPrinting(printing);
+        rating.setPrintingLog(printingLog);
         rating.setStudent(student);
 
         return ratingRepo.save(rating);
@@ -104,7 +106,7 @@ public class RatingService implements IRatingService {
             response.setId(rating.getId());
             response.setRating(rating.getRating());
             response.setComment(rating.getComment());
-            response.setPrintingId((long) rating.getPrinting().getId());
+            response.setPrintingLogId((long) rating.getPrintingLog().getId());
             return response;
         }).collect(Collectors.toList());
 
@@ -129,7 +131,7 @@ public class RatingService implements IRatingService {
         response.setId(rating.getId());
         response.setRating(rating.getRating());
         response.setComment(rating.getComment());
-        response.setPrintingId((long) rating.getPrinting().getId());
+        response.setPrintingLogId((long) rating.getPrintingLog().getId());
 
         return response;
     }
@@ -143,7 +145,7 @@ public class RatingService implements IRatingService {
         response.setId(rating.getId());
         response.setRating(rating.getRating());
         response.setComment(rating.getComment());
-        response.setPrintingId((long) rating.getPrinting().getId());
+        response.setPrintingLogId((long) rating.getPrintingLog().getId());
 
         return response;
     }

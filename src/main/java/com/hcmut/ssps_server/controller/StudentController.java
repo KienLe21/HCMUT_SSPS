@@ -159,7 +159,7 @@ public class StudentController {
         response.setId(createdRating.getId());
         response.setRating(createdRating.getRating());
         response.setComment(createdRating.getComment());
-        response.setPrintingId((long) createdRating.getPrinting().getId());
+        response.setPrintingLogId((long) createdRating.getPrintingLog().getId());
 
         return ApiResponse.<RatingResponse>builder()
                 .result(response)
@@ -199,10 +199,10 @@ public class StudentController {
                 .build();
     }
 
-    @GetMapping("/get-rating-by-printing-id/{printingId}")
-    ApiResponse<List<AdminRatingResponse>> getRatingByPrintingId(@PathVariable Long printingId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    @GetMapping("/get-rating-by-printingLog-id/{printingLogId}")
+    ApiResponse<List<AdminRatingResponse>> getRatingByPrintingLogId(@PathVariable Long printingLogId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<AdminRatingResponse> ratingPages = ratingService.getRatingByPrintingId(printingId, pageable);
+        Page<AdminRatingResponse> ratingPages = ratingService.getRatingByPrintingLogId(printingLogId, pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
                 .result(ratingPages.getContent())
                 .currentPage(ratingPages.getNumber())

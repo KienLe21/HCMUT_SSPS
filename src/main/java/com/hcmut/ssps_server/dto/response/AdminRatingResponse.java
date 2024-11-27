@@ -12,7 +12,7 @@ public class AdminRatingResponse {
     int id;
     int rating;
     String comment;
-    Long printingId;
+    Long printingLogId;
     Long documentId;
     String studentName;
     String studentEmail;

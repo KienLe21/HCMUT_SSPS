@@ -13,10 +13,10 @@ public class AdminRatingMapper {
             AdminRatingResponse.AdminRatingResponseBuilder adminRatingResponse = AdminRatingResponse.builder();
             adminRatingResponse.id(rating.getId());
             adminRatingResponse.rating(rating.getRating());
-            adminRatingResponse.printingId((long) rating.getPrinting().getId());
+            adminRatingResponse.printingLogId((long) rating.getPrintingLog().getId());
             adminRatingResponse.studentName(rating.getStudent().getUser().getFullName());
             adminRatingResponse.studentEmail(rating.getStudent().getUser().getEmail());
-            adminRatingResponse.documentId((long) rating.getPrinting().getDocument().getId());
+            adminRatingResponse.documentId((long) rating.getPrintingLog().getDocument().getId());
             adminRatingResponse.comment(rating.getComment());
             return adminRatingResponse.build();
         }
