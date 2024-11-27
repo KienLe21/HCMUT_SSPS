@@ -63,10 +63,18 @@ git clone https://github.com/KienLe21/HCMUT_SSPS.git
 mvn spring-boot:run
 ```
 
-Tại vị trí thư mục gốc của ứng dụng (hcmut-ssps), mở file cấu hình ứng dụng tại đường dẫn `server/src/main/resources/application.properties`, thay đổi các dòng sau với username và password của tài khoản MySQL mà bạn muốn sử dụng:
-```properties
-spring.datasource.username=...
-spring.datasource.password=...
+Tại vị trí thư mục gốc của ứng dụng (hcmut-ssps), mở file cấu hình ứng dụng tại đường dẫn `src\main\resources\application.yaml`, thay đổi các dòng sau với url, username và password của tài khoản MySQL mà bạn muốn sử dụng:
+```
+spring:
+  datasource:
+    url: "..."
+    username: ...
+    password: ...
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
 ```
 ## Thành viên nhóm
 | STT | MSSV    | Tên Thành Viên            | Role |
