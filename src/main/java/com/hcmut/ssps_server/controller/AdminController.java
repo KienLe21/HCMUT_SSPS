@@ -287,4 +287,10 @@ public class AdminController {
                 .build();
     }
 
+    @GetMapping("/get-rating-by-rating-id/{ratingId}")
+    ApiResponse<RatingResponse> getRatingByRatingId(@PathVariable Long ratingId) {
+        return ApiResponse.<RatingResponse>builder()
+                .result(ratingService.getRatingByRatingId(ratingId))
+                .build();
+    }
 }

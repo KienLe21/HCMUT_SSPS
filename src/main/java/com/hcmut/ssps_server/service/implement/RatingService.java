@@ -134,5 +134,17 @@ public class RatingService implements IRatingService {
         return response;
     }
 
+    @Override
+    public RatingResponse getRatingByRatingId(Long ratingId) {
+        Rating rating = ratingRepo.findById(ratingId)
+                .orElseThrow(() -> new RuntimeException("Rating not found"));
 
+        RatingResponse response = new RatingResponse();
+        response.setId(rating.getId());
+        response.setRating(rating.getRating());
+        response.setComment(rating.getComment());
+        response.setPrintingId((long) rating.getPrinting().getId());
+
+        return response;
+    }
 }

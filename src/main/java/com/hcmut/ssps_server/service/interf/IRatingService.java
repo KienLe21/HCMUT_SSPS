@@ -14,6 +14,7 @@ public interface IRatingService {
     Rating createRating(RatingCreationRequest request);
     List<RatingResponse> getRatingOfCurrentStudent();
     RatingResponse updateRating(Long ratingId, Map<String, Object> updates);
+    RatingResponse getRatingByRatingId(Long ratingId);
     Page<AdminRatingResponse> getAllRatings(Pageable pageable); // Triết
     Page<AdminRatingResponse> getRatingByPrintingId(Long printingId, Pageable pageable); // Triết
     Page<AdminRatingResponse> getRatingsByStudentId(Long studentId, Pageable pageable); //Triết
