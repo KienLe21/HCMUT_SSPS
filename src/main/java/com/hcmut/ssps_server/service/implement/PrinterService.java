@@ -260,10 +260,7 @@ public class PrinterService implements IPrinterService {
 
     @Override
     public Page<Printer> findMatchPrinters(List<String> requiredDocumentType, Pageable pageable) {
-        List<Printer> allPrinters = printerRepo.findAll();
-        List<Printer> filteredPrinters = allPrinters.stream()
-                .filter(printer -> new HashSet<>(printer.getAvailableDocType()).containsAll(requiredDocumentType))
-                .collect(Collectors.toList());
-        return new PageImpl<>(filteredPrinters, pageable, filteredPrinters.size());
+        int requiredDocumentTypeCount = requiredDocumentType.size();
+        return printerRepo.findByAvailableDocTypeContainingAll(requiredDocumentType, requiredDocumentTypeCount, pageable);
     }
 }

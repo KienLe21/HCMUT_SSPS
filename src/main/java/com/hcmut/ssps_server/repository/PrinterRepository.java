@@ -12,4 +12,10 @@ import java.util.List;
 
 @Repository
 public interface PrinterRepository extends JpaRepository<Printer, Long> {
+    @Query("SELECT p FROM Printer p " +
+            "JOIN p.availableDocType adt " +
+            "WHERE adt IN :requiredDocumentType " +
+            "GROUP BY p.printerID " +
+            "HAVING COUNT(adt) = :requiredDocumentTypeSize")
+    Page<Printer> findByAvailableDocTypeContainingAll(List<String> requiredDocumentType, int requiredDocumentTypeSize, Pageable pageable);
 }
