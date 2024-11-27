@@ -110,7 +110,11 @@ public class StudentController {
 
     @PostMapping("/match-printers")
     public ApiResponse<List<Printer>> matchPrinters(@RequestBody PrinterRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Integer page = request.getPage();
+        if (page == null) page = 0;
+        Integer size = request.getSize();
+        if (size == null) size = 3;
+        Pageable pageable = PageRequest.of(page, size);
         Page<Printer> printerPage = printerService.findMatchPrinters(request.getRequiredDocumentType(), pageable);
         return ApiResponse.<List<Printer>>builder()
                 .result(printerPage.getContent())

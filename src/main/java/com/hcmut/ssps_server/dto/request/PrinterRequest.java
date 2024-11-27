@@ -13,6 +13,6 @@ import java.util.List;
 public class PrinterRequest {
     @Size(min = 1, message = "Document type is required")
     List<String> requiredDocumentType;
-    int page = 0;
-    int size = 3;
+    int page;
+    int size;
 }
