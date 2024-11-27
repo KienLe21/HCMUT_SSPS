@@ -52,7 +52,14 @@
 - ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) **Cơ sở dữ liệu:** MySQL
 - ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white) **Công nghệ:** Spring Boot
 ### Hướng dẫn cài đặt
+Các úng dụng cần cài đặt trước khi chạy ứng dụng:
+- ![Java](https://www.oracle.com/java/technologies/downloads/)
+- ![Apache maven](https://maven.apache.org/)
+- ![MySQL](https://www.mysql.com/)
 
+Lệnh cần chạy:
+- git clone https://github.com/KienLe21/HCMUT_SSPS.git
+- mvn spring-boot:run
 ## Thành viên nhóm
 | STT | MSSV    | Tên Thành Viên            | Role |
 |-----|---------|----------------------------|------|
