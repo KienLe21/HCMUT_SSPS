@@ -36,17 +36,27 @@ public class PrintingService implements IPrintingService {
     }
 
     @Override
-    public List<Printing> getPrintRequestsByPrinterId(int printerId, Pageable pageable) {
+    public Page<Printing> getPrintRequestsByPrinterId(int printerId, Pageable pageable) {
         Page<Printing> printingPage = printingRepository.findAllByPrinterToPrintIDAndExpiredTimeIsNull(printerId, pageable);
         if (printingPage.isEmpty()) {
             throw new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND);
         }
-        List<Printing> printingList = printingPage.getContent();
-        return printingList;
+
+        return printingPage;
     }
 
     //3 TRƯỜNG HỢP: STUDENT CONFIRM RECEIVE DOC hoặc MÁY IN BỊ LỖI NÊN HỦY YÊU CẦU ĐANG TỒN TẠI hoặc TÀI LIỆU HẾT THỜI GIAN TỒN TẠI
 //    public void deletePrintRequest(Long printingId) {
 //
 //    }
+
+    @Override
+    public Page<Printing> getAllPrintRequests(Pageable pageable) {
+        Page<Printing> printingPage = printingRepository.findAllByExpiredTimeIsNull(pageable);
+        if (printingPage.isEmpty()) {
+            throw new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND);
+        }
+
+        return printingPage;
+    }
 }

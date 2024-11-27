@@ -231,8 +231,24 @@ public class AdminController {
     @GetMapping("/get-print-requests/{printerId}")
     public ApiResponse<List<Printing>> getPrintRequestsByPrinterId(@PathVariable int printerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         Pageable pageable = PageRequest.of(page, size);
+        Page<Printing> printingPage = printingService.getPrintRequestsByPrinterId(printerId, pageable);
         return ApiResponse.<List<Printing>>builder()
-                .result(printingService.getPrintRequestsByPrinterId(printerId, pageable))
+                .result(printingPage.getContent())
+                .currentPage(printingPage.getNumber())
+                .totalElements(printingPage.getTotalElements())
+                .totalPages(printingPage.getTotalPages())
+                .build();
+    }
+
+    @GetMapping("/get-all-print-requests")
+    public ApiResponse<List<Printing>> getAllPrintRequests(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Printing> printingPage = printingService.getAllPrintRequests(pageable);
+        return ApiResponse.<List<Printing>>builder()
+                .result(printingPage.getContent())
+                .currentPage(printingPage.getNumber())
+                .totalElements(printingPage.getTotalElements())
+                .totalPages(printingPage.getTotalPages())
                 .build();
     }
 

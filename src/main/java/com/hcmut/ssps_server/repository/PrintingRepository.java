@@ -18,6 +18,7 @@ public interface PrintingRepository extends JpaRepository<Printing, Long> {
     List<Printing> findByExpiredTimeBefore(LocalDateTime currentTime);
 
     Page<Printing> findAllByPrinterToPrintIDAndExpiredTimeIsNull(int printerToPrintID, Pageable pageable);
+    Page<Printing> findAllByExpiredTimeIsNull(Pageable pageable);
 
     @Query(value = "SELECT " +
             "    p.id AS printing_id, " +
