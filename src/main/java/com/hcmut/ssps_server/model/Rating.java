@@ -24,8 +24,8 @@ public class Rating {
     String comment;
 
     @ManyToOne
-    @JoinColumn(name = "printing_id", nullable = false)
-    Printing printing;
+    @JoinColumn(name = "printinglog_id", nullable = false)
+    PrintingLog printingLog;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)

@@ -1,6 +1,7 @@
 package com.hcmut.ssps_server.repository;
 
 import com.hcmut.ssps_server.model.Printing;
+import com.hcmut.ssps_server.model.PrintingLog;
 import com.hcmut.ssps_server.model.Rating;
 import com.hcmut.ssps_server.model.user.Student;
 import org.springframework.data.domain.Page;
@@ -14,5 +15,5 @@ import java.util.Optional;
 public interface RatingRepository extends JpaRepository<Rating, Long> {
     List<Rating> findByStudent(Student student);
     Page<Rating> findByStudent(Student student, Pageable pageable);
-    Page<Rating> findByPrinting(Printing printing, Pageable pageable);
+    Page<Rating> findByPrintingLog(PrintingLog printingLog, Pageable pageable);
 }

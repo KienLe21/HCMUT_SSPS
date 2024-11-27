@@ -10,5 +10,5 @@ public class RatingResponse {
     int id;
     int rating;
     String comment;
-    Long printingId;
+    Long printingLogId;
 }
