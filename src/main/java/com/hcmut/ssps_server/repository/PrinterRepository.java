@@ -18,4 +18,6 @@ public interface PrinterRepository extends JpaRepository<Printer, Long> {
             "GROUP BY p.printerID " +
             "HAVING COUNT(adt) = :requiredDocumentTypeSize")
     Page<Printer> findByAvailableDocTypeContainingAll(List<String> requiredDocumentType, int requiredDocumentTypeSize, Pageable pageable);
+
+    Boolean existsByPrinterID(int printerID);
 }

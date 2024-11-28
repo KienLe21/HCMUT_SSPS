@@ -4,6 +4,7 @@ import com.hcmut.ssps_server.exception.AppException;
 import com.hcmut.ssps_server.exception.ErrorCode;
 import com.hcmut.ssps_server.model.Document;
 import com.hcmut.ssps_server.model.Printing;
+import com.hcmut.ssps_server.repository.PrinterRepository;
 import com.hcmut.ssps_server.repository.PrintingRepository;
 import com.hcmut.ssps_server.service.interf.IPrintingService;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,6 +24,7 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PrintingService implements IPrintingService {
     PrintingRepository printingRepository;
+    PrinterRepository printerRepository;
 
     @Override
     public void addPrintRequest(Document document, int printerId) {
@@ -37,10 +39,10 @@ public class PrintingService implements IPrintingService {
 
     @Override
     public Page<Printing> getPrintRequestsByPrinterId(int printerId, Pageable pageable) {
-        Page<Printing> printingPage = printingRepository.findAllByPrinterToPrintIDAndExpiredTimeIsNull(printerId, pageable);
-        if (printingPage.isEmpty()) {
-            throw new AppException(ErrorCode.PRINT_REQUEST_NOT_FOUND);
+        if (!printerRepository.existsByPrinterID(printerId)) {
+            throw new AppException(ErrorCode.PRINTER_NOT_FOUND);
         }
+        Page<Printing> printingPage = printingRepository.findAllByPrinterToPrintIDAndExpiredTimeIsNull(printerId, pageable);
 
         return printingPage;
     }
