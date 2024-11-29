@@ -63,7 +63,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-students")
-    ApiResponse<List<StudentResponse>> getAllStudents(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<StudentResponse>> getAllStudents(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<StudentResponse> studentPage = adminService.getAllStudents(pageable);
         return ApiResponse.<List<StudentResponse>>builder()
@@ -118,7 +118,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-printers")
-    ApiResponse<List<Printer>> getAllPrinters(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<Printer>> getAllPrinters(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Printer> printerPage = printerService.getAllPrinters(pageable);
         return ApiResponse.<List<Printer>>builder()
@@ -166,7 +166,7 @@ public class AdminController {
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "3") int size
+            @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ApiResponse.<Page<AdminPrintingLogResponse>>builder()
@@ -218,7 +218,11 @@ public class AdminController {
 
     @PostMapping("/match-printers")
     public ApiResponse<List<Printer>> matchPrinters(@RequestBody PrinterRequest request) {
-        Pageable pageable = PageRequest.of(request.getPage(), request.getSize());
+        Integer page = request.getPage();
+        if (page == null) page = 0;
+        Integer size = request.getSize();
+        if (size == null) size = 10;
+        Pageable pageable = PageRequest.of(page, size);
         Page<Printer> printerPage = printerService.findMatchPrinters(request.getRequiredDocumentType(), pageable);
         return ApiResponse.<List<Printer>>builder()
                 .result(printerPage.getContent())
@@ -229,7 +233,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-print-requests/{printerId}")
-    public ApiResponse<List<Printing>> getPrintRequestsByPrinterId(@PathVariable int printerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    public ApiResponse<List<Printing>> getPrintRequestsByPrinterId(@PathVariable int printerId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Printing> printingPage = printingService.getPrintRequestsByPrinterId(printerId, pageable);
         return ApiResponse.<List<Printing>>builder()
@@ -241,7 +245,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-print-requests")
-    public ApiResponse<List<Printing>> getAllPrintRequests(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    public ApiResponse<List<Printing>> getAllPrintRequests(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Printing> printingPage = printingService.getAllPrintRequests(pageable);
         return ApiResponse.<List<Printing>>builder()
@@ -260,7 +264,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-all-ratings")
-    ApiResponse<List<AdminRatingResponse>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<AdminRatingResponse>> getAllRatings(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<AdminRatingResponse> ratingPages = ratingService.getAllRatings(pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
@@ -272,7 +276,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-rating-by-printingLog-id/{printingLogId}")
-    ApiResponse<List<AdminRatingResponse>> getRatingByPrintingLogId(@PathVariable Long printingLogId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<AdminRatingResponse>> getRatingByPrintingLogId(@PathVariable Long printingLogId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<AdminRatingResponse> ratingPages = ratingService.getRatingByPrintingLogId(printingLogId, pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
@@ -284,7 +288,7 @@ public class AdminController {
     }
 
     @GetMapping("/get-ratings-by-student-id/{studentId}")
-    ApiResponse<List<AdminRatingResponse>> getRatingsByStudentId(@PathVariable Long studentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
+    ApiResponse<List<AdminRatingResponse>> getRatingsByStudentId(@PathVariable Long studentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<AdminRatingResponse> ratingPages = ratingService.getRatingsByStudentId(studentId, pageable);
         return ApiResponse.<List<AdminRatingResponse>>builder()
